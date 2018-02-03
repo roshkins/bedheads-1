@@ -1,40 +1,37 @@
-const express = require('express');
-const app=express();
-const VoiceResponse=require('twilio').twiml.VoiceResponse;
+const express = require("express");
+const app = express();
+const VoiceResponse = require("twilio").twiml.VoiceResponse;
 //const MessagingResponse=require('twilio').twiml.MessagingResponse;
-const bodyParser = require('body-parser');
-const client=require('twilio')(
-	process.env.BEDHEADS_TWILIO_ACCOUNT_SID,
-	process.env.BEDHEADS_TWILIO_AUTH_TOKEN
+const bodyParser = require("body-parser");
+const client = require("twilio")(
+  process.env.BEDHEADS_TWILIO_ACCOUNT_SID,
+  process.env.BEDHEADS_TWILIO_AUTH_TOKEN
 );
 
-var https=require("https");
+var https = require("https");
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
-const port=process.env.PORT;
-app.listen(port,()=>{
-	console.log('live on port '+port);
+const port = process.env.PORT;
+app.listen(port, () => {
+  console.log("live on port " + port);
 });
 
+app.post("/voice", (req, res) => {
+  url = "https://bedheads-api.herokuapp.com/api/facilities";
+  https.get(url, api_res => {
+    api_res.on("data", chunk => {
+      response.say(JSON.stringify(api_res));
+      const response = new VoiceResponse();
 
-app.post('/voice',(req,res)=>{
-	
-	
-	url='https://bedheads-api.herokuapp.com/api/facilities';
-	https.get(url,res=>{
-	  res.on('data', (chunk) => {
-		const response=new VoiceResponse();
-		response.say("Listing facilities now.");
-		sendResponse(response,res);
-        
-      });
+      response.say("Listing facilities now.");
+
+      sendResponse(response, res);
     });
-	response.say("Listing facilities now.");
-	sendResponse(response,res);
-			
+  });
+  response.say("Listing facilities now.");
+  sendResponse(response, res);
 });
-
 
 /*
 app.get('/handleMainMenuResponse',(req,res)=>{
@@ -60,19 +57,18 @@ app.get('/handleMainMenuResponse',(req,res)=>{
 });
 */
 
-function sendResponse(response,res){
-	responseTwiml=response.toString();
-	console.log("responseTwiml: "+responseTwiml);
-	res.send(responseTwiml);
+function sendResponse(response, res) {
+  responseTwiml = response.toString();
+  console.log("responseTwiml: " + responseTwiml);
+  res.send(responseTwiml);
 }
 
 //creates a url from an array of key-value pairs
-function buildGetUrl(baseUrl,paramArray){
-	url=baseUrl+"?";
-	Object.keys(paramArray).forEach(function(key){
-		url+=key+"="+encodeURIComponent(paramArray[key])+"&";
-	});
-	url=url.slice(0,-1);
-	return url;
-	
+function buildGetUrl(baseUrl, paramArray) {
+  url = baseUrl + "?";
+  Object.keys(paramArray).forEach(function(key) {
+    url += key + "=" + encodeURIComponent(paramArray[key]) + "&";
+  });
+  url = url.slice(0, -1);
+  return url;
 }
