@@ -20,12 +20,10 @@ app.listen(port, () => {
 app.post("/voice", (req, res) => {
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   https.get(url, api_res => {
-	  console.log("entering get callback");
-	 console.log(api_res);
+    console.log("entering get callback");
     api_res.on("data", chunk => {
-      
       const response = new VoiceResponse();
-	  response.say(JSON.stringify(api_res));
+      console.log(JSON.stringify(chunk));
 
       response.say("Listing facilities now.");
 
@@ -38,7 +36,7 @@ app.post("/voice", (req, res) => {
 app.get('/handleMainMenuResponse',(req,res)=>{
 	var digits=req.query.Digits;
 	const response=new VoiceResponse();
-	
+
 	switch(digits){
 		case "1":
 			response.say("Listing facilities now.");
