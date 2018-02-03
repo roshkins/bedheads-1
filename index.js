@@ -20,6 +20,8 @@ app.listen(port, () => {
 app.post("/voice", (req, res) => {
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   https.get(url, api_res => {
+	  console.log("entering get callback");
+	 console.log(api_res);
     api_res.on("data", chunk => {
       
       const response = new VoiceResponse();
