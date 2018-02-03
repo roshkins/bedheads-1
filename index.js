@@ -20,10 +20,9 @@ app.listen(port,()=>{
 
 app.post('/voice',(req,res)=>{
 	
-	console.log("test phone output");
-	//const response=new VoiceResponse();
-	//response.say("Listing facilities now.");
-	//sendResponse(response,res);
+	const response=new VoiceResponse();
+	response.say("Listing facilities now.");
+	sendResponse(response,res);
 			
 });
 
