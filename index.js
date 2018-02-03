@@ -20,17 +20,18 @@ app.listen(port, () => {
 app.post("/voice", (req, res) => {
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   https.get(url, api_res => {
+	  console.log("entering get callback");
+	 console.log(api_res);
     api_res.on("data", chunk => {
-      response.say(JSON.stringify(api_res));
+      
       const response = new VoiceResponse();
+	  response.say(JSON.stringify(api_res));
 
       response.say("Listing facilities now.");
 
       sendResponse(response, res);
     });
   });
-  response.say("Listing facilities now.");
-  sendResponse(response, res);
 });
 
 /*
