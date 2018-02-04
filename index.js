@@ -40,25 +40,25 @@ app.post("/voice", (req, res) => {
 
 function displayBeds(){
 	url = "https://bedheads-api.herokuapp.com/api/facilities";
-  https.get(url, api_res => {
-	console.log("entering get callback");
-	var data = "";
-	api_res.on("data", chunk => {
-	  data += chunk;
-	});
-	api_res.on("end", () => {
-	  const response = new VoiceResponse();
-	  const facilities = JSON.parse(data);
-	  response.say("Listing facilities now.");
-	  facilities.forEach(facility => {
-		const bedsAvailable = facility.bedsAvailable;
-        response.say(`${facility.name} has ${bedsAvailable} beds available.`);
-	  });
-	  console.log(response.toString());
-	  return response;
-	});
-  });
-	
+	console.log("in displayBeds, before get");
+	https.get(url, api_res => {
+		console.log("entering get callback");
+		var data = "";
+		api_res.on("data", chunk => {
+		  data += chunk;
+		});
+		api_res.on("end", () => {
+		  const response = new VoiceResponse();
+		  const facilities = JSON.parse(data);
+		  response.say("Listing facilities now.");
+		  facilities.forEach(facility => {
+			const bedsAvailable = facility.bedsAvailable;
+			response.say(`${facility.name} has ${bedsAvailable} beds available.`);
+		  });
+		  console.log(response.toString());
+		  return response;
+		});
+	});	
 }
 
 
