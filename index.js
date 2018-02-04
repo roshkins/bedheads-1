@@ -32,7 +32,7 @@ app.post("/voice", (req, res) => {
       const facilities = JSON.parse(data);
       response.say("Listing facilities now.");
       facilities.forEach(facility => {
-        const freebeds = facility.bedsAvailable;
+        const bedsAvailable = facility.bedsAvailable;
         response.say(`${facility.name} has ${bedsAvailable} beds available.`);
       });
       sendResponse(response, res);
