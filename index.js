@@ -22,7 +22,7 @@ app.post("/voice", (req, res) => {
 	const response=new VoiceResponse();
 	
 	
-	url=process.env.VENT_URL+'handleMainMenuResponse';
+	url=process.env.BEDHEADS_URL+'handleMainMenuResponse';
 	
 	gather=response.gather({
 		action:url,
@@ -70,6 +70,7 @@ app.get('/handleMainMenuResponse',(req,res)=>{
 
 	switch(digits){
 		case "1":
+			url=process.env.BEDHEADS_URL+"getBeds";
 			gather=response.gather({
 				action:url,
 				method:'GET'
@@ -86,6 +87,9 @@ app.get('/handleMainMenuResponse',(req,res)=>{
 	sendResponse(response,res);
 });
 
+app.get('/getBeds',(req,res)=>{
+	
+});
 
 function sendResponse(response, res) {
   responseTwiml = response.toString();
