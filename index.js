@@ -19,49 +19,46 @@ app.listen(port, () => {
 
 app.post("/voice", (req, res) => {
   
-  url = "https://bedheads-api.herokuapp.com/api/facilities";
-  https.get(url, api_res => {
-    console.log("entering get callback");
-    var data = "";
-    api_res.on("data", chunk => {
-      data += chunk;
-    });
-    api_res.on("end", () => {
-      const response = new VoiceResponse();
-      const facilities = JSON.parse(data);
-      response.say("Listing facilities now.");
-      facilities.forEach(facility => {
-        const freebeds = facility.bedsAvailable;
-        response.say(`${facility.name} has ${bedsAvailable} beds available.`);
-      });
-      sendResponse(response, res);
-    });
-  });
+	const response=new VoiceResponse();
+	
+	
+	url=process.env.BEDHEADS_URL+'handleMainMenuResponse';
+	
+	gather=response.gather({
+		action:url,
+		method:'GET'
+	});
+	gather.say("Press 1 to enter number of beds, press 2 to list available facilities.");
+	response.say("We didn't receive input.  Goodbye!");
+	sendResponse(response,res);
+  
+  
   
   //displayBeds(res);
   
 });
 
-function displayBeds(res){
+function displayBeds(){
 	url = "https://bedheads-api.herokuapp.com/api/facilities";
-  https.get(url, api_res => {
-	console.log("entering get callback");
-	var data = "";
-	api_res.on("data", chunk => {
-	  data += chunk;
-	});
-	api_res.on("end", () => {
-	  const response = new VoiceResponse();
-	  const facilities = JSON.parse(data);
-	  response.say("Listing facilities now.");
-	  facilities.forEach(facility => {
-		const freebeds = facility.bedsAvailable;
-		response.say(`${facility.name} has ${bedsAvailable} beds available.`);
-	  });
-	  sendResponse(response, res);
-	});
-  });
-	
+	console.log("in displayBeds, before get");
+	https.get(url, api_res => {
+		console.log("entering get callback");
+		var data = "";
+		api_res.on("data", chunk => {
+		  data += chunk;
+		});
+		api_res.on("end", () => {
+		  const response = new VoiceResponse();
+		  const facilities = JSON.parse(data);
+		  response.say("Listing facilities now.");
+		  facilities.forEach(facility => {
+			const bedsAvailable = facility.bedsAvailable;
+			response.say(`${facility.name} has ${bedsAvailable} beds available.`);
+		  });
+		  console.log(response.toString());
+		  return response;
+		});
+	});	
 }
 
 
@@ -70,10 +67,11 @@ function displayBeds(res){
 
 app.get('/handleMainMenuResponse',(req,res)=>{
 	var digits=req.query.Digits;
-	const response=new VoiceResponse();
+	var response=new VoiceResponse();
 
 	switch(digits){
 		case "1":
+			url=process.env.BEDHEADS_URL+"getBeds";
 			gather=response.gather({
 				action:url,
 				method:'GET'
@@ -81,26 +79,19 @@ app.get('/handleMainMenuResponse',(req,res)=>{
 			gather.say("Enter the number of free beds in your facility.");
 			break;
 		case "2":
-			var data = "";
-			api_res.on("data", chunk => {
-				data += chunk;
-			});
-			api_res.on("end", () => {
-				const response = new VoiceResponse();
-				const facilities = JSON.parse(data);
-				facilities.forEach(facility => {
-					const freebeds = facility.bedsAvailable;
-					response.say(`${facility.name} has ${freebeds} beds available.`);
-				});
-				sendResponse(response, res);
-			});
+			response=displayBeds(res);
 			break;
 		default:
+			url=process.env.BEDHEADS_URL;
 			response.say("You pressed an incorrect key.");
 			break;		
 	}
+	sendResponse(response,res);
 });
 
+app.get('/getBeds',(req,res)=>{
+	
+});
 
 function sendResponse(response, res) {
   responseTwiml = response.toString();
