@@ -98,20 +98,24 @@ app.get("/handleMainMenuResponse", (req, res) => {
 app.post("/getBeds", (req, res) => {
   const digits = req.query.Digits;
   var response = new VoiceResponse();
+  console.log("Inititate get id by pin");
   fetch(
     "https://bedheads-api.herokuapp.com/api/facilities?filter=" +
       encodeURIComponent(JSON.stringify({ pin: digits + "" }))
   )
     .then(body => body.json())
     .then(json => {
+      console.log("got facility by pin, getting id");
       const facility = json[0];
       const facilityId = facility.id;
       const updatedCountFacility = Object.assign({}, facility);
       updatedCountFacility.bedsAvailable = digits;
+      console.log("initiating facilities count update");
       fetch("https://bedheads-api.herokuapp.com/api/facilities/" + facilityId, {
         method: "PATCH",
         body: JSON.stringify(updatedCountFacility)
       }).then(() => {
+        console.log("facilities updated");
         response.say("Thank you! The hospital count has been updated.");
         response = displayBeds(response);
         sendResponse(response, res);
