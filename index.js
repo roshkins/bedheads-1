@@ -109,7 +109,7 @@ app.get("/handleMainMenuResponse", (req, res) => {
       sendResponse(response, res);
       break;
     case "2":
-      displayBeds(res).then(response => sendResponse(response, res));
+      displayBeds().then(response => sendResponse(response, res));
       break;
     default:
       url = process.env.BEDHEADS_URL;
