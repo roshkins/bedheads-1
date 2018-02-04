@@ -66,7 +66,7 @@ function displayBeds(){
 
 app.get('/handleMainMenuResponse',(req,res)=>{
 	var digits=req.query.Digits;
-	const response=new VoiceResponse();
+	var response=new VoiceResponse();
 
 	switch(digits){
 		case "1":
@@ -81,6 +81,7 @@ app.get('/handleMainMenuResponse',(req,res)=>{
 			response=displayBeds(res);
 			break;
 		default:
+			url=process.env.BEDHEADS_URL;
 			response.say("You pressed an incorrect key.");
 			break;		
 	}
