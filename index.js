@@ -37,7 +37,7 @@ app.post("/voice", (req, res) => {
   //displayBeds(res);
 });
 
-function displayBeds(response) {
+function displayBeds(responseObj) {
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   console.log("in displayBeds, before get");
   https.get(url, api_res => {
@@ -47,7 +47,7 @@ function displayBeds(response) {
       data += chunk;
     });
     api_res.on("end", () => {
-      const response = response || new VoiceResponse();
+      const response = responseObj || new VoiceResponse();
       const facilities = JSON.parse(data);
       response.say("Listing facilities now.");
       facilities.forEach(facility => {
