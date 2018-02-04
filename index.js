@@ -109,7 +109,7 @@ app.get("/handleMainMenuResponse", (req, res) => {
   sendResponse(response, res);
 });
 
-app.get("/getBeds", (req, res) => {
+app.get("/setBeds", (req, res) => {
   const digits = req.query.Digits;
   var response = new VoiceResponse();
   console.log("initiating facilities count update");
