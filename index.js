@@ -27,9 +27,12 @@ app.post("/voice", (req, res) => {
     });
     api_res.on("end", () => {
       const response = new VoiceResponse();
-      console.log(data);
-      response.say(data);
+      const facilities = JSON.parse(data);
       response.say("Listing facilities now.");
+      facilities.forEach(facility => {
+        const freebeds = facility.bedCount - facility.bedcountOccupied;
+        response.say(`${facility.name} has ${freebeds} beds available.`);
+      });
 
       sendResponse(response, res);
     });
