@@ -28,6 +28,7 @@ app.post("/voice", (req, res) => {
     });
     api_res.on("end", () => {
       const response = new VoiceResponse();
+	  console.log(data);
       const facilities = JSON.parse(data);
       response.say("Listing facilities now.");
       facilities.forEach(facility => {
