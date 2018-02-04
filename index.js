@@ -37,7 +37,7 @@ app.post("/voice", (req, res) => {
   //displayBeds(res);
 });
 
-function displayBeds() {
+function displayBeds(response) {
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   console.log("in displayBeds, before get");
   https.get(url, api_res => {
@@ -47,7 +47,7 @@ function displayBeds() {
       data += chunk;
     });
     api_res.on("end", () => {
-      const response = new VoiceResponse();
+      const response = response || new VoiceResponse();
       const facilities = JSON.parse(data);
       response.say("Listing facilities now.");
       facilities.forEach(facility => {
@@ -113,6 +113,7 @@ app.post("/getBeds", (req, res) => {
         body: JSON.stringify(updatedCountFacility)
       }).then(() => {
         response.say("Thank you! The hospital count has been updated.");
+        response = displayBeds(response);
         sendResponse(response, res);
       });
     });
