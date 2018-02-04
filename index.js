@@ -59,7 +59,7 @@ app.get("/validatePin", (req, res) => {
   console.log("Inititate get id by pin");
   fetch(
     "https://bedheads-api.herokuapp.com/api/facilities?filter=" +
-      encodeURIComponent(JSON.stringify({ pin: digits + "" }))
+      encodeURIComponent(JSON.stringify({ where: { pin: digits + "" } }))
   )
     .then(body => body.json())
     .then(json => {
@@ -87,7 +87,7 @@ app.get("/handleMainMenuResponse", (req, res) => {
         action: process.env.BEDHEADS_URL + "validatePin",
         method: "GET"
       });
-      gatherPin.say("Enter your pin now.");
+      gatherPin.say("Enter your pin code now.");
       sendResponse(response, res);
       break;
     case "2":
