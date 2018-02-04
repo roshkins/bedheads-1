@@ -21,10 +21,14 @@ app.post("/voice", (req, res) => {
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   https.get(url, api_res => {
     console.log("entering get callback");
+    var data = "";
     api_res.on("data", chunk => {
+      data += chunk;
+    });
+    api_res.on("end", () => {
       const response = new VoiceResponse();
-      console.log(JSON.stringify(chunk));
-
+      console.log(data);
+      response.say(data);
       response.say("Listing facilities now.");
 
       sendResponse(response, res);
