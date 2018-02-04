@@ -29,7 +29,7 @@ app.post("/voice", (req, res) => {
     method: "GET"
   });
   gather.say(
-    "Press 1 to enter number of beds, press 2 to list available facilities."
+    "Bedheads. Press 1 to enter number of beds, press 2 to list available facilities."
   );
   response.say("We didn't receive input.  Goodbye!");
   sendResponse(response, res);
