@@ -61,6 +61,7 @@ function displayBeds() {
 }
 
 app.get("/validatePin", (req, res) => {
+  var response = new VoiceResponse();
   url = process.env.BEDHEADS_URL + "getBeds";
   gather = response.gather({
     action: url,
