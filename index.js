@@ -18,7 +18,7 @@ app.listen(port, () => {
 });
 
 app.post("/voice", (req, res) => {
-  /*
+  
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   https.get(url, api_res => {
     console.log("entering get callback");
@@ -37,8 +37,8 @@ app.post("/voice", (req, res) => {
       sendResponse(response, res);
     });
   });
-  */
-  displayBeds(res);
+  
+  //displayBeds(res);
   
 });
 
