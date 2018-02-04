@@ -109,7 +109,7 @@ app.get("/setBeds", (req, res) => {
   updatedCountFacility.bedsAvailable = digits;
   console.log(
     `FacilityId ${facilityId} updatedCountFacility ${JSON.stringify(
-      updatedCountFacility
+      JSON.stringify(updatedCountFacility).split("")
     )}`
   );
   var response = new VoiceResponse();
@@ -117,7 +117,7 @@ app.get("/setBeds", (req, res) => {
   fetch("https://bedheads-api.herokuapp.com/api/facilities/" + facilityId, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: updatedCountFacility
+    body: JSON.stringify(updatedCountFacility)
   })
     .then(response => "")
     .then(() => {
