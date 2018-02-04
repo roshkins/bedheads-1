@@ -40,7 +40,18 @@ app.post("/voice", (req, res) => {
 function displayBeds(responseObj) {
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   console.log("in displayBeds, before get");
-  https.get(url, api_res => {
+  return fetch(url)
+    .then(response => response.json())
+    .then(facilities => {
+      const response = responseObj || new VoiceResponse();
+      response.say("Listing facilities now.");
+      facilities.forEach(facility => {
+        const bedsAvailable = facility.bedsAvailable;
+        response.say(`${facility.name} has ${bedsAvailable} beds available.`);
+      });
+      return response;
+    });
+  /*https.get(url, api_res => {
     console.log("entering get callback");
     var data = "";
     api_res.on("data", chunk => {
@@ -57,7 +68,7 @@ function displayBeds(responseObj) {
       console.log(response.toString());
       return response;
     });
-  });
+  });*/
 }
 
 app.get("/validatePin", (req, res) => {
@@ -95,16 +106,17 @@ app.get("/handleMainMenuResponse", (req, res) => {
         method: "GET"
       });
       gatherPin.say("Enter your pihn now.");
+      sendResponse(response, res);
       break;
     case "2":
-      response = displayBeds(res);
+      displayBeds(res).then(response => sendResponse(response, res));
       break;
     default:
       url = process.env.BEDHEADS_URL;
       response.say("You pressed an incorrect key.");
+      sendResponse(response, res);
       break;
   }
-  sendResponse(response, res);
 });
 
 app.get("/setBeds", (req, res) => {
@@ -126,8 +138,7 @@ app.get("/setBeds", (req, res) => {
   }).then(() => {
     console.log("facilities updated");
     response.say("Thank you! The hospital count has been updated.");
-    response = displayBeds(response);
-    sendResponse(response, res);
+    displayBeds(response).then(response => sendResponse(response, res));
   });
 });
 
