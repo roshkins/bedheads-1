@@ -19,6 +19,7 @@ app.listen(port, () => {
 
 app.post("/voice", (req, res) => {
   
+  /*
   url = "https://bedheads-api.herokuapp.com/api/facilities";
   https.get(url, api_res => {
     console.log("entering get callback");
@@ -28,7 +29,6 @@ app.post("/voice", (req, res) => {
     });
     api_res.on("end", () => {
       const response = new VoiceResponse();
-	  console.log(data);
       const facilities = JSON.parse(data);
       response.say("Listing facilities now.");
       facilities.forEach(facility => {
@@ -38,8 +38,9 @@ app.post("/voice", (req, res) => {
       sendResponse(response, res);
     });
   });
+  */
   
-  //displayBeds(res);
+  displayBeds(res);
   
 });
 
@@ -56,8 +57,8 @@ function displayBeds(res){
 	  const facilities = JSON.parse(data);
 	  response.say("Listing facilities now.");
 	  facilities.forEach(facility => {
-		const freebeds = facility.bedsAvailable;
-		response.say(`${facility.name} has ${bedsAvailable} beds available.`);
+		const bedsAvailable = facility.bedsAvailable;
+        response.say(`${facility.name} has ${bedsAvailable} beds available.`);
 	  });
 	  sendResponse(response, res);
 	});
