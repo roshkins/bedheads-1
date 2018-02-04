@@ -79,7 +79,7 @@ app.get("/handleMainMenuResponse", (req, res) => {
         action: process.env.BEDHEADS_URL + "validatePin",
         method: "GET"
       });
-      gatherPin.say("Enter your pin now.");
+      gatherPin.say("Enter your pihn now.");
       break;
     case "2":
       response = displayBeds(res);
