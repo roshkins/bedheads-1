@@ -54,6 +54,7 @@ function displayBeds(){
 		const bedsAvailable = facility.bedsAvailable;
         response.say(`${facility.name} has ${bedsAvailable} beds available.`);
 	  });
+	  console.log(response.toString());
 	  return response;
 	});
   });
