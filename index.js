@@ -72,7 +72,7 @@ app.get("/validatePin", (req, res) => {
         action: url,
         method: "GET"
       });
-      gather.say("Enter the number of free behds in your facility.");
+      gather.say("Enter the number of free beds in your facility.");
       sendResponse(response, res);
     });
 });
@@ -87,7 +87,7 @@ app.get("/handleMainMenuResponse", (req, res) => {
         action: process.env.BEDHEADS_URL + "validatePin",
         method: "GET"
       });
-      gatherPin.say("Enter your pihn now.");
+      gatherPin.say("Enter your pin now.");
       sendResponse(response, res);
       break;
     case "2":
