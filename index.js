@@ -61,7 +61,6 @@ function displayBeds() {
 }
 
 app.get("/validatePin", (req, res) => {
-  gather.say("Enter your pin now.");
   url = process.env.BEDHEADS_URL + "getBeds";
   gather = response.gather({
     action: url,
@@ -80,6 +79,7 @@ app.get("/handleMainMenuResponse", (req, res) => {
         action: process.env.BEDHEADS_URL + "validatePin",
         method: "GET"
       });
+      gather.say("Enter your pin now.");
       break;
     case "2":
       response = displayBeds(res);
