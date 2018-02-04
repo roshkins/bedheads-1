@@ -8,6 +8,8 @@ const client = require("twilio")(
   process.env.BEDHEADS_TWILIO_AUTH_TOKEN
 );
 
+const fetch = require("node-fetch");
+
 var https = require("https");
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -18,79 +20,80 @@ app.listen(port, () => {
 });
 
 app.post("/voice", (req, res) => {
-  
-	const response=new VoiceResponse();
-	
-	
-	url=process.env.BEDHEADS_URL+'handleMainMenuResponse';
-	
-	gather=response.gather({
-		action:url,
-		method:'GET'
-	});
-	gather.say("Press 1 to enter number of beds, press 2 to list available facilities.");
-	response.say("We didn't receive input.  Goodbye!");
-	sendResponse(response,res);
-  
-  
-  
+  const response = new VoiceResponse();
+
+  url = process.env.BEDHEADS_URL + "handleMainMenuResponse";
+
+  gather = response.gather({
+    action: url,
+    method: "GET"
+  });
+  gather.say(
+    "Press 1 to enter number of beds, press 2 to list available facilities."
+  );
+  response.say("We didn't receive input.  Goodbye!");
+  sendResponse(response, res);
+
   //displayBeds(res);
-  
 });
 
-function displayBeds(){
-	url = "https://bedheads-api.herokuapp.com/api/facilities";
-	console.log("in displayBeds, before get");
-	https.get(url, api_res => {
-		console.log("entering get callback");
-		var data = "";
-		api_res.on("data", chunk => {
-		  data += chunk;
-		});
-		api_res.on("end", () => {
-		  const response = new VoiceResponse();
-		  const facilities = JSON.parse(data);
-		  response.say("Listing facilities now.");
-		  facilities.forEach(facility => {
-			const bedsAvailable = facility.bedsAvailable;
-			response.say(`${facility.name} has ${bedsAvailable} beds available.`);
-		  });
-		  console.log(response.toString());
-		  return response;
-		});
-	});	
+function displayBeds() {
+  url = "https://bedheads-api.herokuapp.com/api/facilities";
+  console.log("in displayBeds, before get");
+  https.get(url, api_res => {
+    console.log("entering get callback");
+    var data = "";
+    api_res.on("data", chunk => {
+      data += chunk;
+    });
+    api_res.on("end", () => {
+      const response = new VoiceResponse();
+      const facilities = JSON.parse(data);
+      response.say("Listing facilities now.");
+      facilities.forEach(facility => {
+        const bedsAvailable = facility.bedsAvailable;
+        response.say(`${facility.name} has ${bedsAvailable} beds available.`);
+      });
+      console.log(response.toString());
+      return response;
+    });
+  });
 }
 
-
-
-
-
-app.get('/handleMainMenuResponse',(req,res)=>{
-	var digits=req.query.Digits;
-	var response=new VoiceResponse();
-
-	switch(digits){
-		case "1":
-			url=process.env.BEDHEADS_URL+"getBeds";
-			gather=response.gather({
-				action:url,
-				method:'GET'
-			});
-			gather.say("Enter the number of free beds in your facility.");
-			break;
-		case "2":
-			response=displayBeds(res);
-			break;
-		default:
-			url=process.env.BEDHEADS_URL;
-			response.say("You pressed an incorrect key.");
-			break;		
-	}
-	sendResponse(response,res);
+app.get("/validatePin", (req, res) => {
+  gather.say("Enter your pin now.");
+  url = process.env.BEDHEADS_URL + "getBeds";
+  gather = response.gather({
+    action: url,
+    method: "GET"
+  });
+  gather.say("Enter the number of free behds in your facility.");
 });
 
-app.get('/getBeds',(req,res)=>{
-	
+app.get("/handleMainMenuResponse", (req, res) => {
+  var digits = req.query.Digits;
+  var response = new VoiceResponse();
+
+  switch (digits) {
+    case "1":
+      gatherPin = response.gather({
+        action: process.env.BEDHEADS_URL + "validatePin",
+        method: "GET"
+      });
+      break;
+    case "2":
+      response = displayBeds(res);
+      break;
+    default:
+      url = process.env.BEDHEADS_URL;
+      response.say("You pressed an incorrect key.");
+      break;
+  }
+  sendResponse(response, res);
+});
+
+app.get("/getBeds", (req, res) => {
+  fetch("");
 });
 
 function sendResponse(response, res) {
