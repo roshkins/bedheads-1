@@ -63,13 +63,27 @@ function displayBeds(response) {
 app.get("/validatePin", (req, res) => {
   const digits = req.query.Digits;
   var response = new VoiceResponse();
-  url = process.env.BEDHEADS_URL + "setBeds";
-  gather = response.gather({
-    action: url,
-    method: "POST"
-  });
-  gather.say("Enter the number of free behds in your facility.");
-  sendResponse(response, res);
+  console.log("Inititate get id by pin");
+  fetch(
+    "https://bedheads-api.herokuapp.com/api/facilities?filter=" +
+      encodeURIComponent(JSON.stringify({ pin: digits + "" }))
+  )
+    .then(body => body.json())
+    .then(json => {
+      console.log("got facility by pin, getting id");
+      const facility = json[0];
+      const facilityId = facility.id;
+      const updatedCountFacility = Object.assign({}, facility);
+      updatedCountFacility.bedsAvailable = digits;
+
+      url = process.env.BEDHEADS_URL + "setBeds?id=" + facilityId;
+      gather = response.gather({
+        action: url,
+        method: "GET"
+      });
+      gather.say("Enter the number of free behds in your facility.");
+      sendResponse(response, res);
+    });
 });
 
 app.get("/handleMainMenuResponse", (req, res) => {
@@ -95,32 +109,19 @@ app.get("/handleMainMenuResponse", (req, res) => {
   sendResponse(response, res);
 });
 
-app.post("/getBeds", (req, res) => {
+app.get("/getBeds", (req, res) => {
   const digits = req.query.Digits;
   var response = new VoiceResponse();
-  console.log("Inititate get id by pin");
-  fetch(
-    "https://bedheads-api.herokuapp.com/api/facilities?filter=" +
-      encodeURIComponent(JSON.stringify({ pin: digits + "" }))
-  )
-    .then(body => body.json())
-    .then(json => {
-      console.log("got facility by pin, getting id");
-      const facility = json[0];
-      const facilityId = facility.id;
-      const updatedCountFacility = Object.assign({}, facility);
-      updatedCountFacility.bedsAvailable = digits;
-      console.log("initiating facilities count update");
-      fetch("https://bedheads-api.herokuapp.com/api/facilities/" + facilityId, {
-        method: "PATCH",
-        body: JSON.stringify(updatedCountFacility)
-      }).then(() => {
-        console.log("facilities updated");
-        response.say("Thank you! The hospital count has been updated.");
-        response = displayBeds(response);
-        sendResponse(response, res);
-      });
-    });
+  console.log("initiating facilities count update");
+  fetch("https://bedheads-api.herokuapp.com/api/facilities/" + facilityId, {
+    method: "PATCH",
+    body: JSON.stringify(updatedCountFacility)
+  }).then(() => {
+    console.log("facilities updated");
+    response.say("Thank you! The hospital count has been updated.");
+    response = displayBeds(response);
+    sendResponse(response, res);
+  });
 });
 
 function sendResponse(response, res) {
