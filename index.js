@@ -63,10 +63,10 @@ function displayBeds() {
 app.get("/validatePin", (req, res) => {
   const digits = req.query.Digits;
   var response = new VoiceResponse();
-  url = process.env.BEDHEADS_URL + "getBeds";
+  url = process.env.BEDHEADS_URL + "setBeds";
   gather = response.gather({
     action: url,
-    method: "GET"
+    method: "POST"
   });
   gather.say("Enter the number of free behds in your facility.");
   sendResponse(response, res);
@@ -95,8 +95,27 @@ app.get("/handleMainMenuResponse", (req, res) => {
   sendResponse(response, res);
 });
 
-app.get("/getBeds", (req, res) => {
-  fetch("");
+app.post("/getBeds", (req, res) => {
+  const digits = req.query.Digits;
+  var response = new VoiceResponse();
+  fetch(
+    "https://bedheads-api.herokuapp.com/api/facilities?filter=" +
+      encodeURIComponent(JSON.stringify({ pin: digits + "" }))
+  )
+    .then(body => body.json())
+    .then(json => {
+      const facility = json[0];
+      const facilityId = facility.id;
+      const updatedCountFacility = Object.assign({}, facility);
+      updatedCountFacility.bedsAvailable = digits;
+      fetch("https://bedheads-api.herokuapp.com/api/facilities/" + facilityId, {
+        method: "PATCH",
+        body: JSON.stringify(updatedCountFacility)
+      }).then(() => {
+        response.say("Thank you! The hospital count has been updated.");
+        sendResponse(response, res);
+      });
+    });
 });
 
 function sendResponse(response, res) {
