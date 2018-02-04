@@ -51,24 +51,6 @@ function displayBeds(responseObj) {
       });
       return response;
     });
-  /*https.get(url, api_res => {
-    console.log("entering get callback");
-    var data = "";
-    api_res.on("data", chunk => {
-      data += chunk;
-    });
-    api_res.on("end", () => {
-      const response = responseObj || new VoiceResponse();
-      const facilities = JSON.parse(data);
-      response.say("Listing facilities now.");
-      facilities.forEach(facility => {
-        const bedsAvailable = facility.bedsAvailable;
-        response.say(`${facility.name} has ${bedsAvailable} beds available.`);
-      });
-      console.log(response.toString());
-      return response;
-    });
-  });*/
 }
 
 app.get("/validatePin", (req, res) => {
@@ -134,12 +116,15 @@ app.get("/setBeds", (req, res) => {
   console.log("initiating facilities count update");
   fetch("https://bedheads-api.herokuapp.com/api/facilities/" + facilityId, {
     method: "PATCH",
-    body: JSON.stringify(updatedCountFacility)
-  }).then(() => {
-    console.log("facilities updated");
-    response.say("Thank you! The hospital count has been updated.");
-    displayBeds(response).then(response => sendResponse(response, res));
-  });
+    headers: { "Content-Type": "application/json" },
+    body: updatedCountFacility
+  })
+    .then(response => "")
+    .then(() => {
+      console.log("facilities updated");
+      response.say("Thank you! The hospital count has been updated.");
+      displayBeds(response).then(response => sendResponse(response, res));
+    });
 });
 
 function sendResponse(response, res) {
