@@ -73,8 +73,6 @@ app.get("/validatePin", (req, res) => {
       console.log("got facility by pin, getting id");
       const facility = json[0];
       const facilityId = facility.id;
-      const updatedCountFacility = Object.assign({}, facility);
-      updatedCountFacility.bedsAvailable = digits;
 
       url = process.env.BEDHEADS_URL + "setBeds?id=" + facilityId;
       gather = response.gather({
@@ -110,7 +108,16 @@ app.get("/handleMainMenuResponse", (req, res) => {
 });
 
 app.get("/setBeds", (req, res) => {
+  console.log("In set beds");
   const digits = req.query.Digits;
+  const facilityId = req.query.id;
+  const updatedCountFacility = {};
+  updatedCountFacility.bedsAvailable = digits;
+  console.log(
+    `FacilityId ${facilityId} updatedCountFacility ${JSON.stringify(
+      updatedCountFacility
+    )}`
+  );
   var response = new VoiceResponse();
   console.log("initiating facilities count update");
   fetch("https://bedheads-api.herokuapp.com/api/facilities/" + facilityId, {
