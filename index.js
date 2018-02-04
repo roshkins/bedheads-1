@@ -61,6 +61,7 @@ function displayBeds() {
 }
 
 app.get("/validatePin", (req, res) => {
+  const digits = req.query.Digits;
   var response = new VoiceResponse();
   url = process.env.BEDHEADS_URL + "getBeds";
   gather = response.gather({
@@ -68,6 +69,7 @@ app.get("/validatePin", (req, res) => {
     method: "GET"
   });
   gather.say("Enter the number of free behds in your facility.");
+  sendResponse(response, res);
 });
 
 app.get("/handleMainMenuResponse", (req, res) => {
